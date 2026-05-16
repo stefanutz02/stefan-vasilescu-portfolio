@@ -91,7 +91,7 @@ I picked every dependency on this project deliberately. Here is the reasoning:
 
 **A custom `LanguageProvider` instead of `next-intl` or `i18next`.** The site has two languages and a flat translation object. A 30-line context provider does the job; pulling in a heavy i18n library would have been over-engineering.
 
-**No backend in the repo.** The contact form posts to a separate API hosted under `api.stefanvasilescu.com`. Keeping the front end deployable as static files means there is one less moving part to maintain.
+**No backend in the repo.** The contact form posts to a separate API hosted under `email-api.stefanvasilescu.com`. Keeping the front end deployable as static files means there is one less moving part to maintain.
 
 ## Project structure
 
