@@ -98,16 +98,21 @@ export const metadata: Metadata = {
     title: 'Stefan Vasilescu | Full-Stack Developer & CEO',
     description:
       'Building immersive digital experiences, scalable platforms, and futuristic products. CEO of Vesko Software, Co-Founder of Era Innovations.',
-    images: [
-      {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Stefan Vasilescu - Full-Stack Developer Portfolio',
-        type: 'image/jpeg',
-      },
-    ],
-  },
+  images: [
+    {
+      url: '/og-image.jpg',
+      width: 1200,
+      height: 630,
+      alt: 'Stefan Vasilescu - Full-Stack Developer Portfolio',
+    },
+    {
+      url: '/stefan-vasilescu-portrait.jpg',
+      width: 800,
+      height: 800,
+      alt: 'Stefan Vasilescu, Full-Stack Developer, portrait photograph',
+    },
+  ],
+},
   
   twitter: {
     card: 'summary_large_image',
@@ -173,7 +178,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   givenName: 'Stefan',
                   familyName: 'Vasilescu',
                   url: 'https://stefanvasilescu.com',
-                  image: 'https://stefanvasilescu.com/profile.jpg',
+                  image: {
+                    '@type': 'ImageObject',
+                    '@id': 'https://stefanvasilescu.com/#portrait',
+                    url: 'https://stefanvasilescu.com/stefan-vasilescu-portrait.jpg',
+                    contentUrl: 'https://stefanvasilescu.com/stefan-vasilescu-portrait.jpg',
+                    caption: 'Stefan Vasilescu, Full-Stack Developer and CEO of Vesko Software',
+                    width: 800,
+                    height: 800,
+                  },
                   jobTitle: 'Full-Stack Developer',
                   description: 'CEO of Vesko Software and Co-Founder of Era Innovations. Building immersive digital experiences and futuristic products.',
                   email: 'contact@stefanvasilescu.com',
