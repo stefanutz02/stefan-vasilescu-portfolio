@@ -1,6 +1,6 @@
 {
   "name": "stefanvasilescu-portfolio",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -13,10 +13,7 @@
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
     "framer-motion": "^11.0.0",
-    "lenis": "^1.1.0",
-    "lucide-react": "^0.400.0",
-    "clsx": "^2.1.0",
-    "tailwind-merge": "^2.3.0"
+    "lucide-react": "^0.400.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

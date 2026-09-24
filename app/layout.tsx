@@ -1,20 +1,21 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Space_Grotesk, Caveat } from 'next/font/google';
+import { Inter, Plus_Jakarta_Sans, Caveat } from 'next/font/google';
 import './globals.css';
 import { LanguageProvider } from '@/components/LanguageProvider';
-import { SmoothScroll } from '@/components/SmoothScroll';
-import { CustomCursor } from '@/components/CustomCursor';
+import { ThemeProvider, themeScript } from '@/components/ThemeProvider';
+import { ScrollProgress } from '@/components/Motion';
 import { Navbar } from '@/components/Navbar';
 
 const inter = Inter({ 
-  subsets: ['latin'], 
+  subsets: ['latin', 'latin-ext'],
   variable: '--font-inter',
   display: 'swap'
 });
 
-const space = Space_Grotesk({ 
-  subsets: ['latin'], 
-  variable: '--font-space',
+const display = Plus_Jakarta_Sans({
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-display',
+  weight: ['500', '600', '700', '800'],
   display: 'swap'
 });
 
@@ -30,7 +31,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   themeColor: '#0a0a0a',
-  colorScheme: 'dark',
+  colorScheme: 'dark light',
 };
 
 export const metadata: Metadata = {
@@ -139,10 +140,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html 
       lang="en" 
-      className={`${inter.variable} ${space.variable} ${caveat.variable}`}
+      className={`dark ${inter.variable} ${display.variable} ${caveat.variable}`}
       suppressHydrationWarning
     >
       <head>
+        {/* Apply saved theme before first paint — dark is the default */}
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <noscript>
+          <style dangerouslySetInnerHTML={{ __html: '[data-reveal]{opacity:1!important;transform:none!important;filter:none!important}' }} />
+        </noscript>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -157,13 +163,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://email-api.stefanvasilescu.com" crossOrigin="anonymous" />
       </head>
       
-      <body className="font-sans antialiased bg-neutral-950 text-white">
-        <LanguageProvider>
-          <SmoothScroll />
-          <CustomCursor />
-          <Navbar />
-          {children}
-        </LanguageProvider>
+      <body className="font-sans antialiased">
+        <ThemeProvider>
+          <LanguageProvider>
+            <ScrollProgress />
+            <Navbar />
+            {children}
+          </LanguageProvider>
+        </ThemeProvider>
         
         <script
           type="application/ld+json"
@@ -212,7 +219,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     },
                   ],
                   sameAs: [
-                    'https://github.com/stefanvasilescu',
+                    'https://github.com/stefanutz02',
                     'https://linkedin.com/in/stefanvasilescu',
                     'https://twitter.com/stefanvasilescu',
                     'https://erainnovations.ro',

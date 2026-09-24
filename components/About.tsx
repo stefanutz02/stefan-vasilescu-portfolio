@@ -1,90 +1,43 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { Code2, Cpu, Layers, Sparkles } from 'lucide-react';
 import { useLanguage } from './LanguageProvider';
-import { Code2, Layers, Cpu, Sparkles } from 'lucide-react';
+import { Stagger, StaggerItem } from './Motion';
+import { SectionHead } from './UI';
 
-const aboutCards = [
-  {
-    icon: Code2,
-    title: 'Full-Stack Mastery',
-    key: 'p1' as const,
-    gradient: 'from-purple-500/20 to-violet-500/20',
-  },
-  {
-    icon: Layers,
-    title: 'Systems & Scale',
-    key: 'p2' as const,
-    gradient: 'from-fuchsia-500/20 to-purple-500/20',
-  },
-  {
-    icon: Cpu,
-    title: 'Robotics & IoT',
-    key: 'p3' as const,
-    gradient: 'from-violet-500/20 to-indigo-500/20',
-  },
-  {
-    icon: Sparkles,
-    title: 'Philosophy',
-    key: 'p4' as const,
-    gradient: 'from-purple-400/20 to-fuchsia-400/20',
-  },
+const cards = [
+  { key: 'p1' as const, icon: Code2 },
+  { key: 'p2' as const, icon: Layers },
+  { key: 'p3' as const, icon: Cpu },
+  { key: 'p4' as const, icon: Sparkles },
 ];
 
 export function About() {
   const { t } = useLanguage();
 
   return (
-    <section id="about" className="relative py-32 bg-neutral-950 overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(124,58,237,0.08)_0%,_transparent_50%)]" />
+    <section id="about" className="relative py-20 sm:py-28">
+      <div className="container-x">
+        <SectionHead eyebrow={t.about.title} title={t.about.subtitle} />
 
-      <div className="container mx-auto px-6 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-20"
-        >
-          <h2 className="text-sm font-medium text-purple-400 tracking-widest uppercase mb-4">
-            {t.about.title}
-          </h2>
-          <p className="text-3xl md:text-5xl font-display font-bold text-white max-w-4xl mx-auto leading-tight">
-            {t.about.subtitle}
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-          {aboutCards.map((card, i) => (
-            <motion.div
-              key={card.key}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              whileHover={{ y: -6, transition: { duration: 0.2 } }}
-              className="group relative p-8 rounded-3xl bg-white/[0.02] backdrop-blur-sm border border-white/[0.06] hover:border-purple-500/30 transition-all hover:shadow-[0_0_40px_rgba(168,85,247,0.1)]"
-            >
-              <div
-                className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${card.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl`}
-              />
-              
-              <div className="relative">
-                <div className="mb-6 inline-flex p-3 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 group-hover:text-purple-300 group-hover:border-purple-400/40 transition-colors">
-                  <card.icon className="w-6 h-6" />
+        <Stagger className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {cards.map((c, i) => (
+            <StaggerItem key={c.key} className="h-full">
+              <div className="glass card-hover group flex h-full flex-col p-6">
+                <div className="flex items-center justify-between">
+                  <span className="chip inline-flex h-12 w-12 items-center justify-center rounded-2xl text-accent transition-transform duration-500 group-hover:scale-105">
+                    <c.icon className="h-[22px] w-[22px]" />
+                  </span>
+                  <span className="font-display text-[13px] font-bold text-brand-400/70">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
                 </div>
-                
-                <h3 className="text-xl font-display font-bold text-white mb-4 group-hover:text-purple-200 transition-colors">
-                  {card.title}
-                </h3>
-                
-                <p className="text-neutral-400 leading-relaxed group-hover:text-neutral-300 transition-colors">
-                  {(t.about as any)[card.key]}
-                </p>
+                <h3 className="mt-5 text-[17px] leading-snug">{t.about.cards[c.key]}</h3>
+                <p className="mt-2.5 text-sm leading-relaxed text-ink-soft">{t.about[c.key]}</p>
               </div>
-            </motion.div>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </div>
     </section>
   );

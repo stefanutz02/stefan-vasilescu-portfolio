@@ -16,15 +16,21 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLang] = useState<Language>('en');
 
   useEffect(() => {
-    const saved = localStorage.getItem('language') as Language;
-    if (saved && (saved === 'en' || saved === 'ro')) {
-      setLang(saved);
-    }
+    try {
+      const saved = localStorage.getItem('language');
+      if (saved === 'en' || saved === 'ro') setLang(saved);
+    } catch {}
   }, []);
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   const setLanguage = useCallback((newLang: Language) => {
     setLang(newLang);
-    localStorage.setItem('language', newLang);
+    try {
+      localStorage.setItem('language', newLang);
+    } catch {}
   }, []);
 
   const toggleLanguage = useCallback(() => {

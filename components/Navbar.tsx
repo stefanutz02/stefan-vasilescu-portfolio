@@ -1,166 +1,173 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowUpRight, Menu, Moon, Sun, X } from 'lucide-react';
 import { useLanguage } from './LanguageProvider';
-import { Menu, X, ChevronDown } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { useTheme } from './ThemeProvider';
+import { Logo } from './Logo';
 
-const navItems = [
-  { id: 'home', label: 'home' as const },
-  { id: 'about', label: 'about' as const },
-  { id: 'skills', label: 'skills' as const },
-  { id: 'projects', label: 'projects' as const, dropdown: ['coding', 'robotics'] as const },
-  { id: 'experience', label: 'experience' as const },
-  { id: 'contact', label: 'contact' as const },
-];
+const NAV = ['about', 'skills', 'projects', 'experience', 'contact'] as const;
+type Section = 'home' | (typeof NAV)[number];
 
 export function Navbar() {
-  const { t, lang, setLanguage } = useLanguage();
-  const [hidden, setHidden] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { t, lang, toggleLanguage } = useLanguage();
+  const { theme, toggleTheme } = useTheme();
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState<Section>('home');
 
   useEffect(() => {
-    const handleScroll = () => {
-      const current = window.scrollY;
-      if (current > lastScrollY && current > 100) setHidden(true);
-      else setHidden(false);
-      setLastScrollY(current);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
-  const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-      setMobileOpen(false);
-      setDropdownOpen(false);
-    }
-  };
+  // Highlight the section currently in view
+  useEffect(() => {
+    const ids: Section[] = ['home', ...NAV];
+    const els = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive(e.target.id as Section);
+        });
+      },
+      { rootMargin: '-45% 0px -50% 0px' }
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
+
+  const otherLang = lang === 'en' ? 'ro' : 'en';
+  const themeLabel = theme === 'dark' ? t.nav.themeLight : t.nav.themeDark;
 
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: hidden ? -100 : 0 }}
-      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4"
-    >
-      <div className="relative flex items-center gap-1 rounded-full bg-black/40 backdrop-blur-2xl border border-white/10 px-2 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
-        <div className="hidden md:flex items-center gap-1">
-          {navItems.map((item) => (
-            <div key={item.id} className="relative">
-              {item.dropdown ? (
-                <div
-                  className="relative"
-                  onMouseEnter={() => setDropdownOpen(true)}
-                  onMouseLeave={() => setDropdownOpen(false)}
-                >
-                  <button
-                    onClick={() => scrollTo(item.id)}
-                    className="flex items-center gap-1 px-4 py-2 text-sm text-white/70 hover:text-white transition-colors rounded-full hover:bg-white/5"
-                  >
-                    {t.nav[item.label]}
-                    <ChevronDown
-                      className={cn(
-                        'w-3 h-3 transition-transform duration-200',
-                        dropdownOpen && 'rotate-180'
-                      )}
-                    />
-                  </button>
-                  <AnimatePresence>
-                    {dropdownOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 8, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute top-full left-0 mt-2 w-40 rounded-2xl bg-black/60 backdrop-blur-2xl border border-white/10 overflow-hidden shadow-xl"
-                      >
-                        {item.dropdown.map((sub) => (
-                          <button
-                            key={sub}
-                            onClick={() => scrollTo('projects')}
-                            className="block w-full text-left px-4 py-3 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors"
-                          >
-                            {t.nav[sub]}
-                          </button>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              ) : (
-                <button
-                  onClick={() => scrollTo(item.id)}
-                  className="px-4 py-2 text-sm text-white/70 hover:text-white transition-colors rounded-full hover:bg-white/5"
-                >
-                  {t.nav[item.label]}
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* EN / RO Switch */}
-        <div className="ml-2 flex items-center rounded-full bg-white/5 border border-white/10 p-1">
-          <button
-            onClick={() => setLanguage('en')}
-            className={`relative px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
-              lang === 'en'
-                ? 'bg-gradient-to-b from-purple-300 to-purple-600 text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]'
-                : 'text-white/40 hover:text-white/70'
-            }`}
-          >
-            EN
-          </button>
-          <button
-            onClick={() => setLanguage('ro')}
-            className={`relative px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
-              lang === 'ro'
-                ? 'bg-gradient-to-b from-purple-300 to-purple-600 text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]'
-                : 'text-white/40 hover:text-white/70'
-            }`}
-          >
-            RO
-          </button>
-        </div>
-
-        <button
-          className="md:hidden ml-2 p-2 text-white/70 hover:text-white"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
+    <header className="pointer-events-none fixed inset-x-0 top-0 z-50 pt-3 sm:pt-4">
+      <div className="container-x">
+        <div
+          className={[
+            'pointer-events-auto relative flex items-center justify-between gap-3 rounded-full border px-3 py-2 transition-all duration-500 sm:px-4',
+            scrolled ? 'glass-strong !rounded-full shadow-[0_18px_40px_-24px_rgba(0,0,0,.45)]' : 'glass !rounded-full',
+          ].join(' ')}
         >
-          {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-10 top-0 h-px"
+            style={{ background: 'linear-gradient(90deg, transparent, var(--glass-edge), transparent)' }}
+          />
+
+          <a href="#home" className="flex shrink-0 items-center gap-2.5 rounded-full py-1 pl-1.5 pr-3" aria-label={t.nav.home}>
+            <Logo className="h-8 w-8" />
+            <span className="hidden text-[16px] font-semibold tracking-tight text-ink sm:inline">Stefan Vasilescu</span>
+          </a>
+
+          <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
+            {NAV.map((id) => (
+              <a
+                key={id}
+                href={`#${id}`}
+                className={[
+                  'relative rounded-full px-3.5 py-2 text-[13.5px] font-medium transition-colors duration-300',
+                  active === id ? 'text-accent' : 'text-ink-soft hover:text-ink',
+                ].join(' ')}
+              >
+                {active === id && (
+                  <motion.span
+                    layoutId="nav-pill"
+                    className="chip absolute inset-0 -z-10 rounded-full"
+                    transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                  />
+                )}
+                {t.nav[id]}
+              </a>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={toggleLanguage}
+              className="chip hidden h-10 rounded-full px-3 text-[12px] font-semibold uppercase tracking-wider text-ink-soft transition-colors hover:text-accent sm:block"
+              aria-label={t.nav.otherLang}
+            >
+              {otherLang}
+            </button>
+
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="chip inline-flex h-10 w-10 items-center justify-center rounded-full text-ink-soft transition-colors hover:text-accent"
+              aria-label={themeLabel}
+              title={themeLabel}
+            >
+              {theme === 'dark' ? <Sun className="h-[18px] w-[18px]" /> : <Moon className="h-[18px] w-[18px]" />}
+            </button>
+
+            <a href="#contact" className="btn-primary hidden !px-5 !py-2.5 !text-[13px] sm:inline-flex">
+              {t.hero.ctaContact}
+              <ArrowUpRight className="h-4 w-4" />
+            </a>
+
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              className="chip inline-flex h-10 w-10 items-center justify-center rounded-full text-ink lg:hidden"
+              aria-expanded={open}
+              aria-label={open ? t.nav.close : t.nav.menu}
+            >
+              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </div>
       </div>
 
       <AnimatePresence>
-        {mobileOpen && (
+        {open && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            className="absolute top-full mt-4 w-[90vw] max-w-sm rounded-3xl bg-black/80 backdrop-blur-2xl border border-white/10 p-6 shadow-2xl md:hidden"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className="pointer-events-auto container-x mt-2 lg:hidden"
           >
-            <div className="flex flex-col gap-2">
-              {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => scrollTo(item.id)}
-                  className="w-full text-left px-4 py-3 text-white/70 hover:text-white hover:bg-white/5 rounded-xl transition-colors"
-                >
-                  {t.nav[item.label]}
-                </button>
-              ))}
+            <div className="glass-strong glass-edge overflow-hidden !rounded-[28px] p-3">
+              <nav className="flex flex-col" aria-label="Mobile">
+                {(['home', ...NAV] as Section[]).map((id) => (
+                  <a
+                    key={id}
+                    href={`#${id}`}
+                    onClick={() => setOpen(false)}
+                    className="flex items-center justify-between rounded-2xl px-4 py-3.5 text-[15px] font-medium text-ink transition-colors hover:bg-brand-500/10"
+                  >
+                    {t.nav[id]}
+                    <ArrowUpRight className="h-4 w-4 text-brand-500" />
+                  </a>
+                ))}
+              </nav>
+              <div className="hairline my-2" />
+              <button
+                type="button"
+                onClick={toggleLanguage}
+                className="flex w-full items-center justify-between rounded-2xl px-4 py-3.5 text-[15px] font-medium text-ink-soft"
+              >
+                {t.nav.otherLang}
+                <span className="chip rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">
+                  {otherLang}
+                </span>
+              </button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </header>
   );
 }
