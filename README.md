@@ -260,6 +260,7 @@ To add a project without a screenshot, leave out `image` and the card uses the g
 
 See [Releases](https://github.com/stefanutz02/stefan-vasilescu-portfolio/releases) for full notes.
 
+- **v2.2.0**: two new projects, [Orario](https://github.com/stefanutz02/orario) (school timetable generator) and [Arhiva Note](https://github.com/stefanutz02/arhiva-note) (local-first school records app), each with a device mockup, bilingual description and repo link.
 - **v2.1.0**: SEO overhaul: Romanian page at `/ro/` with hreflang, per-language titles and share images, `ProfilePage` + `Person` structured data, cleaned sitemap, `.htaccess` shipped with the build.
 - **v2.0.0**: complete redesign in the Vesko glass design language, dark-first theme with light mode, bilingual project descriptions, GitHub repo links on projects, leaner dependencies.
 - **v1.1.0**: hero portrait with animated ring, image SEO foundation, mobile layout fixes, sitemap namespaces.

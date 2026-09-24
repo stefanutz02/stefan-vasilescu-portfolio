@@ -130,7 +130,7 @@ export function buildJsonLd(lang: Language) {
         mainEntity: { '@id': person },
         about: { '@id': person },
         primaryImageOfPage: { '@id': `${SITE_URL}/#portrait` },
-        dateModified: '2026-09-24',
+        dateModified: '2026-09-25',
       },
       {
         '@type': 'Person',

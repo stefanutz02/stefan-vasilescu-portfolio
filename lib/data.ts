@@ -59,6 +59,33 @@ export const projects: Project[] = [
     github: [{ label: 'realty-pro', url: 'https://github.com/stefanutz02/realty-pro' }],
   },
   {
+    id: 'orario',
+    title: 'Orario',
+    description: {
+      en: 'School timetable generator for Romanian schools. A custom solver (MRV backtracking, ejection chains, simulated annealing on an effort curve) builds a full timetable in seconds, never breaks teacher availability, explains blocked slots and suggests cross-class swaps. PDF export for classes and teachers.',
+      ro: 'Generator de orare pentru școlile din România. Un solver propriu (backtracking MRV, lanțuri de ejecție, simulated annealing pe curba de efort) construiește orarul complet în câteva secunde, nu încalcă niciodată disponibilitatea profesorilor, explică blocajele și propune schimburi între clase. Export PDF pe clase și profesori.',
+    },
+    category: 'coding',
+    tags: ['React', 'TypeScript', 'Node.js', 'MySQL'],
+    image: '/projects/orario.jpg',
+    imageAlt: 'Orario timetable editor showing a class schedule with move suggestions',
+    link: 'https://orario.stefanvasilescu.com',
+    github: [{ label: 'orario', url: 'https://github.com/stefanutz02/orario' }],
+  },
+  {
+    id: 'arhiva-note',
+    title: 'Arhiva Note',
+    description: {
+      en: 'Local-first school records app for students and parents: grades, absences, averages, timetable, homework and projects, with risk-of-being-called scores, grade simulations and five printable PDF reports. No account, no cloud — everything lives in one SQLite file.',
+      ro: 'Aplicație locală pentru elevi și părinți: note, absențe, medii, orar, teme și proiecte, cu risc de ascultare, simulări de note și cinci rapoarte PDF gata de printat. Fără cont, fără cloud — totul stă într-un singur fișier SQLite.',
+    },
+    category: 'coding',
+    tags: ['React', 'TypeScript', 'Express', 'SQLite'],
+    image: '/projects/arhiva-note.jpg',
+    imageAlt: 'Arhiva Note class dashboard with general average, absences and grade charts',
+    github: [{ label: 'arhiva-note', url: 'https://github.com/stefanutz02/arhiva-note' }],
+  },
+  {
     id: 'anya-events',
     title: 'Anya Events',
     description: {

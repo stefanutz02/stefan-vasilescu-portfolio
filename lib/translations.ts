@@ -31,7 +31,7 @@ export const translations = {
       stats: [
         { value: '2020', label: 'Writing code since' },
         { value: '15', label: 'Technologies in the toolkit' },
-        { value: '5', label: 'Featured projects' },
+        { value: '7', label: 'Featured projects' },
         { value: '2', label: 'Companies building' },
       ],
     },
@@ -148,7 +148,7 @@ export const translations = {
       stats: [
         { value: '2020', label: 'Scriu cod din' },
         { value: '15', label: 'Tehnologii în arsenal' },
-        { value: '5', label: 'Proiecte prezentate' },
+        { value: '7', label: 'Proiecte prezentate' },
         { value: '2', label: 'Companii în construcție' },
       ],
     },

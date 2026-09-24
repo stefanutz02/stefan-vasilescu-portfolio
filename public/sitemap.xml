@@ -7,7 +7,7 @@
   <!-- English (default) -->
   <url>
     <loc>https://stefanvasilescu.com/</loc>
-    <lastmod>2026-09-24</lastmod>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://stefanvasilescu.com/" />
@@ -31,6 +31,14 @@
       <image:title>Obiectiv Imobiliare mobile app by Stefan Vasilescu</image:title>
     </image:image>
     <image:image>
+      <image:loc>https://stefanvasilescu.com/projects/orario.jpg</image:loc>
+      <image:title>Orario school timetable generator by Stefan Vasilescu</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://stefanvasilescu.com/projects/arhiva-note.jpg</image:loc>
+      <image:title>Arhiva Note school records app by Stefan Vasilescu</image:title>
+    </image:image>
+    <image:image>
       <image:loc>https://stefanvasilescu.com/projects/anya-events.jpg</image:loc>
       <image:title>Anya Events Shopify store by Stefan Vasilescu</image:title>
     </image:image>
@@ -39,7 +47,7 @@
   <!-- Romanian -->
   <url>
     <loc>https://stefanvasilescu.com/ro/</loc>
-    <lastmod>2026-09-24</lastmod>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://stefanvasilescu.com/" />
