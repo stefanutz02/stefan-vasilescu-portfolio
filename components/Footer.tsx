@@ -7,7 +7,7 @@ import { companies, socials } from '@/lib/data';
 const SECTIONS = ['home', 'about', 'skills', 'projects', 'experience', 'contact'] as const;
 
 export function Footer() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const year = new Date().getFullYear();
 
   return (
@@ -59,10 +59,21 @@ export function Footer() {
             <p>
               © {year} Stefan Vasilescu. {t.footer.rights}
             </p>
-            <a href="#home" className="inline-flex items-center gap-1.5 transition-colors hover:text-accent">
-              {t.footer.backToTop}
-              <ArrowUp className="h-3.5 w-3.5" />
-            </a>
+            <div className="flex items-center gap-5">
+              <nav aria-label="Language" className="flex items-center gap-2">
+                <a href="/" hrefLang="en" lang="en" className={lang === 'en' ? 'font-semibold text-accent' : 'transition-colors hover:text-accent'}>
+                  English
+                </a>
+                <span aria-hidden="true">·</span>
+                <a href="/ro/" hrefLang="ro" lang="ro" className={lang === 'ro' ? 'font-semibold text-accent' : 'transition-colors hover:text-accent'}>
+                  Română
+                </a>
+              </nav>
+              <a href="#home" className="inline-flex items-center gap-1.5 transition-colors hover:text-accent">
+                {t.footer.backToTop}
+                <ArrowUp className="h-3.5 w-3.5" />
+              </a>
+            </div>
           </div>
         </div>
       </div>

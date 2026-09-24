@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUpRight, Menu, Moon, Sun, X } from 'lucide-react';
 import { useLanguage } from './LanguageProvider';
@@ -11,7 +12,7 @@ const NAV = ['about', 'skills', 'projects', 'experience', 'contact'] as const;
 type Section = 'home' | (typeof NAV)[number];
 
 export function Navbar() {
-  const { t, lang, toggleLanguage } = useLanguage();
+  const { t, lang } = useLanguage();
   const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -48,6 +49,7 @@ export function Navbar() {
   }, [open]);
 
   const otherLang = lang === 'en' ? 'ro' : 'en';
+  const otherHref = otherLang === 'ro' ? '/ro/' : '/';
   const themeLabel = theme === 'dark' ? t.nav.themeLight : t.nav.themeDark;
 
   return (
@@ -93,14 +95,14 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-1.5">
-            <button
-              type="button"
-              onClick={toggleLanguage}
-              className="chip hidden h-10 rounded-full px-3 text-[12px] font-semibold uppercase tracking-wider text-ink-soft transition-colors hover:text-accent sm:block"
+            <Link
+              href={otherHref}
+              hrefLang={otherLang}
+              className="chip hidden h-10 items-center rounded-full px-3 text-[12px] font-semibold uppercase tracking-wider text-ink-soft transition-colors hover:text-accent sm:inline-flex"
               aria-label={t.nav.otherLang}
             >
               {otherLang}
-            </button>
+            </Link>
 
             <button
               type="button"
@@ -154,16 +156,17 @@ export function Navbar() {
                 ))}
               </nav>
               <div className="hairline my-2" />
-              <button
-                type="button"
-                onClick={toggleLanguage}
+              <Link
+                href={otherHref}
+                hrefLang={otherLang}
+                onClick={() => setOpen(false)}
                 className="flex w-full items-center justify-between rounded-2xl px-4 py-3.5 text-[15px] font-medium text-ink-soft"
               >
                 {t.nav.otherLang}
                 <span className="chip rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">
                   {otherLang}
                 </span>
-              </button>
+              </Link>
             </div>
           </motion.div>
         )}

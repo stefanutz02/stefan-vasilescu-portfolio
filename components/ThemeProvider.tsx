@@ -9,8 +9,9 @@ const ThemeContext = createContext<{ theme: Theme; toggleTheme: () => void } | n
 /**
  * Inline script for <head>: applies the stored theme before first paint.
  * Dark is the default — light is used only if the visitor picked it.
+ * Also sets <html lang="ro"> on the /ro/ page.
  */
-export const themeScript = `(function(){try{var t=localStorage.getItem('theme');var d=document.documentElement;if(t==='light'){d.classList.remove('dark')}else{d.classList.add('dark')}}catch(e){}})();`;
+export const themeScript = `(function(){var d=document.documentElement;if(location.pathname.indexOf('/ro')===0){d.lang='ro'}try{var t=localStorage.getItem('theme');if(t==='light'){d.classList.remove('dark')}else{d.classList.add('dark')}}catch(e){}})();`;
 
 const THEME_COLORS: Record<Theme, string> = { dark: '#0a0a0a', light: '#fbf9ff' };
 

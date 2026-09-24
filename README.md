@@ -44,6 +44,7 @@ It supports English and Romanian and is statically exported, so any CDN can host
 - [Build & deploy](#build--deploy)
 - [Customization guide](#customization-guide)
 - [Performance & SEO](#performance--seo)
+- [Search engines](#search-engines)
 - [Changelog](#changelog)
 - [Roadmap](#roadmap)
 - [Contact](#contact)
@@ -91,12 +92,12 @@ It supports English and Romanian and is statically exported, so any CDN can host
 
 - **Dark-first theming with a light mode.** The site is dark by default, and a sun/moon toggle switches to light. The choice is saved, and an inline script applies it before the first paint, so the page never flashes the wrong theme. The browser `theme-color` updates along with it.
 - **Glass design system.** `.glass`, `.glass-strong`, `.glass-tint` and `.glass-edge` surfaces, drifting aurora blobs, a masked grid background and a top-of-page scroll progress bar.
-- **Bilingual UI (EN / RO).** Every string is translated, including the project descriptions. The chosen language is saved and applied to `<html lang>`.
+- **Bilingual UI (EN / RO) with real URLs.** English lives at `/` and Romanian at `/ro/`. Both are pre-rendered and linked with `hreflang`, so Google indexes each language separately.
 - **Single-page layout.** Hero, About, Technologies, Projects, Experience, Contact and Footer. The header highlights the section in view with a sliding pill.
 - **Hero profile card.** A glass card with your portrait inside a rotating conic ring, an "available" status dot, role tiles, floating chips and pointer-reactive 3D tilt.
 - **Project gallery.** *Coding* and *Robotics* tabs with animated filtering. Each card shows its GitHub repo count. The detail modal has Visit, Source (one button per repo), App Store and Play Store links, closes with Esc, and locks page scroll. Projects without a screenshot get a branded gradient cover.
 - **Motion design.** Blur-in reveals, staggered grids, an infinite technology marquee, spring tab transitions and a sticky timeline heading, all built with Framer Motion.
-- **Production SEO.** Open Graph and Twitter cards, JSON-LD (Person, WebSite, WebPage, two organizations, portrait `ImageObject`), canonical URL, geo meta, image sitemap with hreflang, robots.txt and a PWA manifest.
+- **Production SEO.** Per-language titles, descriptions, canonicals and Open Graph images; `ProfilePage` + `Person` JSON-LD (with `alternateName` for *Ștefan Vasilescu*), organizations and a projects list; `rel="me"` profile links; an image sitemap with hreflang; robots.txt and a PWA manifest.
 - **Accessible by default.** Semantic landmarks, labelled form fields, keyboard-operable cards and dialog, visible focus rings, `prefers-reduced-motion` support, and a `<noscript>` fallback that shows all content without JavaScript.
 - **Static export.** `next build` outputs a fully static `dist/` folder with no server required.
 
@@ -134,14 +135,16 @@ It supports English and Romanian and is statically exported, so any CDN can host
 .
 ├── app/
 │   ├── globals.css           # Theme tokens (light / .dark), glass system, buttons, chips
-│   ├── layout.tsx            # Fonts, SEO metadata, JSON-LD, theme script, providers
-│   └── page.tsx              # Single-page composition of all sections
+│   ├── layout.tsx            # Fonts, site-wide metadata, theme script, providers
+│   ├── page.tsx              # English page (/)
+│   └── ro/page.tsx           # Romanian page (/ro/)
 ├── components/
 │   ├── About.tsx             # Four numbered glass cards
 │   ├── Contact.tsx           # Social links + form, POSTs to the email API
 │   ├── Experience.tsx        # Vertical timeline with sticky heading
 │   ├── Footer.tsx            # Signature, section / company / social columns
 │   ├── Hero.tsx              # Copy, glass profile card, stats strip, marquee
+│   ├── HomePage.tsx          # All sections + JSON-LD, shared by both languages
 │   ├── LanguageProvider.tsx  # EN/RO context, persisted, syncs <html lang>
 │   ├── Logo.tsx              # "SV" monogram
 │   ├── Motion.tsx            # Reveal, Stagger, Tilt, Marquee, ScrollProgress
@@ -152,11 +155,12 @@ It supports English and Romanian and is statically exported, so any CDN can host
 │   └── UI.tsx                # Aurora, Eyebrow, SectionHead
 ├── lib/
 │   ├── data.ts               # Projects, GitHub repos, skills, socials, companies, API URL
+│   ├── seo.ts                # Per-language metadata + JSON-LD (single source of truth)
 │   └── translations.ts       # All copy for EN and RO, fully typed
 ├── public/
 │   ├── projects/             # Project preview images
 │   ├── stefan-vasilescu-portrait.jpg
-│   ├── og-image.jpg          # Open Graph card
+│   ├── og-image.jpg          # Open Graph card (EN), og-image-ro.jpg (RO)
 │   ├── icon-*.png, icon.svg  # PWA + favicons
 │   ├── manifest.json
 │   ├── robots.txt
@@ -173,7 +177,7 @@ It supports English and Romanian and is statically exported, so any CDN can host
 
 **Theme.** `ThemeProvider` exposes `{ theme, toggleTheme }`. The server renders `<html class="dark">`, and an inline script in `<head>` removes the class before first paint only if `localStorage.theme === 'light'`. Toggling flips the class, saves the choice and updates `<meta name="theme-color">`. Every color reads from CSS variables, so no component needs theme-specific code.
 
-**Languages.** `LanguageProvider` exposes `{ lang, t, toggleLanguage, setLanguage }`. Components read `t.<section>.<key>`, and project descriptions come from `description[lang]` in `lib/data.ts`. The translation object uses a `const` assertion, so every key is type-checked.
+**Languages.** The language comes from the URL: `/` is English and `/ro/` is Romanian. `LanguageProvider` reads it with `usePathname()` and exposes `{ lang, t }`, and the EN/RO switch is a real link, so crawlers can follow it. Components read `t.<section>.<key>`, and project descriptions come from `description[lang]` in `lib/data.ts`.
 
 **Navigation.** In-page anchors (`#about`, `#projects`, …) use native smooth scrolling, and `scroll-padding-top` keeps headings clear of the fixed header. An `IntersectionObserver` tracks which section is in view and moves the active pill.
 
@@ -183,7 +187,7 @@ It supports English and Romanian and is statically exported, so any CDN can host
 
 **Contact form.** It POSTs `{ name, email, message }` to `CONTACT_API_URL` and shows one of four states: `idle`, `sending`, `success` or `error`.
 
-**SEO.** `app/layout.tsx` exports full Open Graph and Twitter metadata plus a JSON-LD graph that links me, the site, the homepage and both companies.
+**SEO.** `lib/seo.ts` builds each page's metadata (title, description, canonical, hreflang, Open Graph, Twitter) and its JSON-LD graph: a `ProfilePage` whose `mainEntity` is the `Person`, linked to the website, both companies and the project list.
 
 ## Getting started
 
@@ -209,6 +213,9 @@ This produces a fully static `dist/` directory.
 - **Vercel**: zero-config.
 - **Cloudflare Pages / Netlify**: build command `npm run build`, output directory `dist`.
 - **GitHub Pages**: publish the `dist` folder to a `gh-pages` branch.
+- **DirectAdmin / Apache (production)**: zip the build with `tar -a -c -f site.zip -C dist .`, delete the old `_next/`, `404/`, `index.html`, `404.html` and `index.txt` from `public_html`, then upload and extract the zip there. `sitemap.xml`, `robots.txt` and `.htaccess` come from `public/` and are included automatically.
+
+`public/.htaccess` forces HTTPS, redirects `www` to the bare domain, serves `404.html`, and sets cache and compression headers.
 
 > ⚠️ Because of `output: 'export'`, features that need a Node runtime (Image Optimization API, Route Handlers, `revalidate`, middleware) are unavailable. `images.unoptimized: true` in `next.config.js` accounts for this.
 
@@ -227,7 +234,7 @@ This produces a fully static `dist/` directory.
 | Theme colors (both modes)      | CSS variables in `app/globals.css`                            |
 | Brand scale, fonts, keyframes  | `tailwind.config.ts`, fonts in `app/layout.tsx`               |
 | Default theme                  | `themeScript` in `components/ThemeProvider.tsx`               |
-| SEO, OG image, JSON-LD         | `app/layout.tsx`                                              |
+| SEO titles, OG, JSON-LD        | `lib/seo.ts` (+ `app/layout.tsx` for site-wide bits)          |
 | Sitemap & robots               | `public/sitemap.xml`, `public/robots.txt`                     |
 
 To add a project without a screenshot, leave out `image` and the card uses the gradient cover. To add a third language, extend `translations` and the `description` records in `data.ts`, then update the `Language` type.
@@ -242,16 +249,25 @@ To add a project without a screenshot, leave out `image` and the card uses the g
 - **Structured data.** JSON-LD links the person, site, page, portrait and companies.
 - **Image SEO.** Descriptive filenames and alt text, plus an image sitemap for the portrait, OG image and project images.
 
+## Search engines
+
+1. Verify `stefanvasilescu.com` in [Google Search Console](https://search.google.com/search-console) as a **Domain** property (DNS TXT record).
+2. Submit `sitemap.xml`, then use **URL Inspection → Request indexing** for `/` and `/ro/`.
+3. Import the site into [Bing Webmaster Tools](https://www.bing.com/webmasters) from Search Console.
+4. Check the structured data with the [Rich Results Test](https://search.google.com/test/rich-results). It should detect a **Profile page**.
+
 ## Changelog
 
 See [Releases](https://github.com/stefanutz02/stefan-vasilescu-portfolio/releases) for full notes.
 
+- **v2.1.0**: SEO overhaul: Romanian page at `/ro/` with hreflang, per-language titles and share images, `ProfilePage` + `Person` structured data, cleaned sitemap, `.htaccess` shipped with the build.
 - **v2.0.0**: complete redesign in the Vesko glass design language, dark-first theme with light mode, bilingual project descriptions, GitHub repo links on projects, leaner dependencies.
 - **v1.1.0**: hero portrait with animated ring, image SEO foundation, mobile layout fixes, sitemap namespaces.
 
 ## Roadmap
 
 - [x] ~~Light theme toggle~~ (shipped in v2.0.0)
+- [x] ~~Separate indexable Romanian page~~ (shipped in v2.1.0)
 - [ ] Blog section (MDX) for writeups on projects and stack decisions
 - [ ] Per-project case-study pages with deeper screenshots and architecture notes
 - [ ] Real photos for ERA Weather and Vesko Rover to replace the gradient covers
